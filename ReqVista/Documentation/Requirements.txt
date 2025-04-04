@@ -1,0 +1,23 @@
+Here are the requirements for the solution.
+
+Non Functional:
+* Code will be in C# .NET
+* .NET MAUI will be used for cross platform mobile application and will use LiteDB for offline storage
+* Blazor will be used for a web application
+* API will be used for integrations and also for access to the data from the front end applications
+* Database, API, etc will be hosted in Azure using a cloud native approach
+* Containers will be used where appropriate with Podman for development
+* Share component libraries will be used between systems
+* Entity framework core will be used on the Azure SQL side
+* Entities will inherit from ObservableObject from the Community Toolkit MVVM Nuget package and properties will have [ObservableProperty] attributes for change notification
+
+High Level Functional:
+System will be called "ReqVista" and will be used as the root namespace in the project and class files
+System will track and manage a hierarchical structure of Portfolio -> Projects -> Requirements 
+Stakeholder management 
+Risk tracking
+Milestone planning
+Requirement lifecycle management
+User management
+Notification system
+Reporting capabilities

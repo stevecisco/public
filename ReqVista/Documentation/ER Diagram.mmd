@@ -1,0 +1,171 @@
+erDiagram
+    Portfolio ||--o{ Project : contains
+    Portfolio ||--o{ PortfolioStakeholder : has
+    Portfolio ||--o{ Attachment : has
+    User ||--o{ PortfolioStakeholder : assigned_to
+    User ||--o{ ProjectStakeholder : assigned_to
+    User ||--o{ Project : manages
+    User ||--o{ Requirement : assigned_to
+    User ||--o{ Risk : owns
+    User ||--o{ Attachment : uploads
+    Project ||--o{ Requirement : contains
+    Project ||--o{ Risk : identifies
+    Project ||--o{ Milestone : sets
+    Project ||--o{ ProjectStakeholder : has
+    Project ||--o{ Attachment : has
+    Requirement ||--o{ Attachment : has
+    Requirement ||--o{ RequirementComment : has
+    Requirement ||--o{ RequirementHistory : tracks
+    Requirement ||--o{ Requirement : parent_of
+    Milestone ||--o{ Requirement : associates
+    Milestone ||--o{ Attachment : has
+    Risk ||--o{ Attachment : has
+    Notification ||--o{ Attachment : has
+    RequirementComment ||--o{ Attachment : has
+    User ||--o{ RequirementComment : authors
+    User ||--o{ RequirementHistory : modifies
+    User ||--o{ Notification : receives
+    User ||--o{ ReportTemplate : creates
+    
+    Portfolio {
+        string id PK
+        string name
+        string description
+        datetime createdDate
+        string ownerId FK
+        enum status
+    }
+    
+    Project {
+        string id PK
+        string name
+        string description
+        string code
+        datetime startDate
+        datetime targetEndDate
+        datetime actualEndDate
+        enum status
+        enum priority
+        decimal budget
+        string portfolioId FK
+        string managerId FK
+    }
+    
+    Requirement {
+        string id PK
+        string title
+        string description
+        string requirementId 
+        enum type
+        enum priority
+        enum status
+        string projectId FK
+        string assigneeId FK
+        datetime dueDate
+        string parentRequirementId FK
+    }
+    
+    Milestone {
+        string id PK
+        string title
+        string description
+        datetime targetDate
+        datetime actualDate
+        enum status
+        string projectId FK
+    }
+    
+    Risk {
+        string id PK
+        string title
+        string description
+        enum probability
+        enum impact
+        enum status
+        string projectId FK
+        string ownerId FK
+        string mitigationPlan
+        datetime identifiedDate
+        datetime resolvedDate
+    }
+    
+    Attachment {
+        string id PK
+        string fileName
+        string fileType
+        long fileSize
+        string uploadedById FK
+        datetime uploadedDate
+        string fileUrl
+        string entityId FK
+        string entityType
+    }
+    
+    User {
+        string id PK
+        string username
+        string email
+        string firstName
+        string lastName
+        string jobTitle
+        string department
+        enum role
+        string avatarUrl
+        bool isActive
+    }
+    
+    PortfolioStakeholder {
+        string id PK
+        string portfolioId FK
+        string userId FK
+        enum role
+    }
+    
+    ProjectStakeholder {
+        string id PK
+        string projectId FK
+        string userId FK
+        enum role
+    }
+    
+    RequirementComment {
+        string id PK
+        string requirementId FK
+        string authorId FK
+        datetime commentDate
+        string content
+    }
+    
+    RequirementHistory {
+        string id PK
+        string requirementId FK
+        string userId FK
+        datetime changeDate
+        string fieldChanged
+        string oldValue
+        string newValue
+    }
+    
+    Notification {
+        string id PK
+        string userId FK
+        string title
+        string message
+        enum type
+        string relatedEntityId
+        string relatedEntityType
+        bool isRead
+        datetime createdDate
+    }
+    
+    ReportTemplate {
+        string id PK
+        string name
+        string description
+        enum type
+        string creatorId FK
+        bool isPublic
+        string configuration
+        datetime createdDate
+        datetime lastRunDate
+    }

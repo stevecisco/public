@@ -1,0 +1,137 @@
+graph TD
+    %% Client Layer
+    subgraph "Client Layer"
+        WebClient["Blazor Web Application"]
+        MobileClient["MAUI Mobile Application"]
+    end
+
+    %% API Layer
+    subgraph "API Layer"
+        APIGateway["Azure API Management"]
+        WebAPI["ReqVista Web API"]
+        AuthAPI["Authentication API"]
+        ReportingAPI["Reporting API"]
+        NotificationAPI["Notification API"]
+    end
+
+    %% Business Layer
+    subgraph "Business Logic Layer"
+        PortfolioService["Portfolio Service"]
+        ProjectService["Project Service"]
+        RequirementService["Requirement Service"]
+        RiskService["Risk Service"]
+        UserService["User Service"]
+        MilestoneService["Milestone Service"]
+        NotificationService["Notification Service"]
+        ReportingService["Reporting Service"]
+    end
+
+    %% Data Layer
+    subgraph "Data Layer"
+        AzureSQL["Azure SQL Database"]
+        Redis["Azure Redis Cache"]
+        Blob["Azure Blob Storage"]
+        LiteDB["LiteDB (Mobile)"]
+    end
+
+    %% External Systems
+    subgraph "External Systems"
+        ExternalAuth["Identity Provider/AAD"]
+        EmailService["Email Service"]
+        ExternalAPI["3rd Party Integrations"]
+    end
+
+    %% DevOps
+    subgraph "DevOps/Infrastructure"
+        CD["Azure DevOps/CI CD"]
+        AppInsights["Application Insights"]
+        AzureMonitor["Azure Monitor"]
+        KeyVault["Azure Key Vault"]
+    end
+
+    %% Shared Services
+    subgraph "Shared Services"
+        SharedLib["Shared Component Library"]
+        ViewModels["Shared ViewModels"]
+        DTOs["Data Transfer Objects"]
+        ValidationRules["Validation Rules"]
+    end
+
+    %% Connections
+    WebClient -->|HTTPS| APIGateway
+    MobileClient -->|HTTPS| APIGateway
+    MobileClient -->|Offline Storage| LiteDB
+    LiteDB -->|Sync| WebAPI
+    
+    APIGateway -->|Route| WebAPI
+    APIGateway -->|Route| AuthAPI
+    APIGateway -->|Route| ReportingAPI
+    APIGateway -->|Route| NotificationAPI
+    
+    WebAPI --> PortfolioService
+    WebAPI --> ProjectService
+    WebAPI --> RequirementService
+    WebAPI --> RiskService
+    WebAPI --> UserService
+    WebAPI --> MilestoneService
+    
+    ReportingAPI --> ReportingService
+    NotificationAPI --> NotificationService
+    AuthAPI -->|Authorize| UserService
+    AuthAPI -->|Authenticate| ExternalAuth
+    
+    PortfolioService --> AzureSQL
+    ProjectService --> AzureSQL
+    RequirementService --> AzureSQL
+    RiskService --> AzureSQL
+    UserService --> AzureSQL
+    MilestoneService --> AzureSQL
+    NotificationService --> AzureSQL
+    ReportingService --> AzureSQL
+    
+    PortfolioService --> Redis
+    ProjectService --> Redis
+    RequirementService --> Redis
+    
+    NotificationService -->|Send| EmailService
+    ReportingService --> Blob
+    WebAPI --> Blob
+    
+    WebAPI -->|Use| SharedLib
+    WebClient -->|Use| SharedLib
+    MobileClient -->|Use| SharedLib
+    
+    WebAPI -->|Use| ViewModels
+    WebClient -->|Use| ViewModels
+    MobileClient -->|Use| ViewModels
+    
+    PortfolioService -->|Use| DTOs
+    ProjectService -->|Use| DTOs
+    RequirementService -->|Use| DTOs
+    
+    WebAPI -->|Use| ValidationRules
+    WebClient -->|Use| ValidationRules
+    MobileClient -->|Use| ValidationRules
+    
+    CD -->|Deploy| WebClient
+    CD -->|Deploy| WebAPI
+    CD -->|Deploy| AuthAPI
+    CD -->|Deploy| ReportingAPI
+    CD -->|Deploy| NotificationAPI
+    CD -->|Package| MobileClient
+    
+    WebAPI -->|Log| AppInsights
+    AuthAPI -->|Log| AppInsights
+    ReportingAPI -->|Log| AppInsights
+    NotificationAPI -->|Log| AppInsights
+    WebClient -->|Log| AppInsights
+    MobileClient -->|Log| AppInsights
+    
+    AppInsights --> AzureMonitor
+    
+    WebAPI -->|Secrets| KeyVault
+    AuthAPI -->|Secrets| KeyVault
+    ReportingAPI -->|Secrets| KeyVault
+    NotificationAPI -->|Secrets| KeyVault
+    
+    WebAPI -->|Integrate| ExternalAPI
